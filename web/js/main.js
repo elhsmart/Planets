@@ -30,10 +30,29 @@ for(var a in resources) {
 }
 
 PlanetController.run(function(){
-    Star = new Star({
+    var MainStar = new Star({
         parent: PlanetController,
         image: PlanetController.resources['stars-1']
     });
 
-    PlanetController.elements.push(Star);
+    var Orbit1 = new Orbit({
+        parent: MainStar,
+        radius: 100
+    });
+
+    var Orbit2 = new Orbit({
+        parent: MainStar,
+        radius: 50
+    });
+
+    var Orbit3 = new Orbit({
+        parent: MainStar,
+        radius: 150
+    });
+
+    MainStar.appendOrbit(Orbit1);
+    MainStar.appendOrbit(Orbit2);
+    MainStar.appendOrbit(Orbit3);
+
+    PlanetController.elements.push(MainStar);
 });
