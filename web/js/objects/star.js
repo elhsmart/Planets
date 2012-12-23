@@ -12,15 +12,11 @@ var Star = function(parameters) {
     this.width      = 0;
     this.height     = 0;
 
+    this.globalCenter = {};
+
     this.dc         = document.createElement("canvas");
 
     this.dc.setAttribute("id", this.id);
-
-    this.dc.style.float = "right";
-    this.dc.style.border = "1px solid red";
-
-    document.getElementById("body").appendChild(this.dc);
-
     this.dctx       = this.dc.getContext("2d");
 
     Helpers.setParams.call(this, parameters);
@@ -30,12 +26,27 @@ Helpers.extend(Star, Element);
 
 Star.prototype.appendOrbit = function(orbit) {
     if(orbit instanceof Orbit) {
+        orbit.setParent(this);
         this.orbits.push(orbit)
     }
 }
 
-Star.prototype.setParent = function(parent) {
-    this.parent = parent;
+Star.prototype.handleEvent = function(type, evt) {
+    switch(type) {
+        case "mousemove": {
+            var distance = Helpers.distance(this.globalCenter.x, this.globalCenter.y, evt.x, evt.y);
+            for (var n = this.orbits.length - 1; n >= 0; n--) {
+                if(this.orbits[n].radius-10 < distance &&
+                    this.orbits[n].radius+10 > distance ) {
+                    this.orbits[n].hover = true;
+                    this.orbits[n].handleEvent(type, evt);
+                } else {
+                    this.orbits[n].hover = false;
+                }
+            }
+            break;
+        }
+    }
 }
 
 Star.prototype.setImage = function(img) {
@@ -48,7 +59,7 @@ Star.prototype.setImage = function(img) {
     this.setHeight(this.image.height);
 }
 
-Star.prototype.draw = function() {
+Star.prototype.draw = function(timestamp) {
     var orbitData = null;
     var drawData = null;
 
@@ -56,7 +67,7 @@ Star.prototype.draw = function() {
     // Compose all orbits
 
     for(var a in this.orbits) {
-        drawData = this.orbits[a].draw();
+        drawData = this.orbits[a].draw(timestamp);
         if(orbitData == null) {
             orbitData = drawData;
             continue;

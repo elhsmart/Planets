@@ -3,6 +3,23 @@ var Element = function() {
 
 }
 
+Element.prototype.getStartTimestamp = function() {
+    if(this.startTimestamp == undefined) {
+        return this.parent.getStartTimestamp();
+    }
+
+    return this.startTimestamp;
+}
+
+Element.prototype.setGlobalCenter = function(center) {
+    this.globalCenter = center;
+}
+
+
+Element.prototype.setParent = function(parent) {
+    this.parent = parent;
+}
+
 Element.prototype.setX = function(x) {
     this.x = x;
 }

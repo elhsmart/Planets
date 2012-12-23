@@ -32,27 +32,31 @@ for(var a in resources) {
 PlanetController.run(function(){
     var MainStar = new Star({
         parent: PlanetController,
-        image: PlanetController.resources['stars-1']
+        image: PlanetController.resources['stars-1'],
+        globalCenter: PlanetController.getGlobalCenter()
     });
 
-    var Orbit1 = new Orbit({
-        parent: MainStar,
-        radius: 100
-    });
+    var pos = 0;
+    for(var i=0;i<12;i++ ) {
+        this["Orbit"+i] = new Orbit({
+            parent: MainStar,
+            radius: 100+(i*25),
+            globalCenter: PlanetController.getGlobalCenter()
+        });
 
-    var Orbit2 = new Orbit({
-        parent: MainStar,
-        radius: 50
-    });
-
-    var Orbit3 = new Orbit({
-        parent: MainStar,
-        radius: 150
-    });
-
-    MainStar.appendOrbit(Orbit1);
-    MainStar.appendOrbit(Orbit2);
-    MainStar.appendOrbit(Orbit3);
+        pos = (Math.floor(Math.random() * Math.floor(Math.PI*2*100))) / 100;
+        //console.log('planets-'+i);
+        this['Planet'+i] = new Planet({
+            image: PlanetController.resources['planets-'+(i+1)],
+            speed: Math.PI*2/(40+(i*20)),
+            startPosition: 0,
+            globalCenter: PlanetController.getGlobalCenter()
+        });
+        1
+        this["Orbit"+i].addPlanet(this["Planet"+i]);
+        MainStar.appendOrbit(this["Orbit"+i]);
+    }
 
     PlanetController.elements.push(MainStar);
+    PlanetController.listen();
 });

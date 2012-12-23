@@ -19,7 +19,7 @@ html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquot
     outline: 0;
     font-size: 100%;
     vertical-align: baseline;
-    background: transparent;
+    background: transparent url(/img/back.png);
 }
 
 article, aside, figure, footer, header, hgroup, nav, section {display: block;}
@@ -144,7 +144,3 @@ a:link {-webkit-tap-highlight-color: #fcd700;}
 
 ins {background-color: #fcd700; color: #000; text-decoration: none;}
 mark {background-color: #fcd700; color: #000; font-style: italic; font-weight: bold;}
-
-canvas {
-    border: 1px solid red;
-}
