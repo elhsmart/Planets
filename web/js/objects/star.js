@@ -47,16 +47,19 @@ Star.prototype.handleEvent = function(type, evt) {
                 return;
             }
 
+            var cursor = "auto";
             var distance = Helpers.distance(this.globalCenter.x, this.globalCenter.y, evt.x, evt.y);
             for (var n = this.orbits.length - 1; n >= 0; n--) {
                 if(this.orbits[n].radius-10 < distance &&
                     this.orbits[n].radius+10 > distance ) {
                     this.orbits[n].hover = true;
                     this.orbits[n].handleEvent(type, evt);
+                    cursor = "pointer";
                 } else {
                     this.orbits[n].hover = false;
                 }
             }
+            document.getElementById("body").style.cursor = cursor;
             break;
         }
         case "mousedown": {

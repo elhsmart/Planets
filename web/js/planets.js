@@ -54,7 +54,6 @@ Planets.prototype.draw = function(timestamp) {
 }
 
 Planets.prototype.loadResources = function(cb) {
-    console.log("Start loading resources");
     var self = this;
     self.data.loadedResourcesCount = 0;
     self.data.resourcesCount = Helpers.objLength(self.resources);
@@ -64,7 +63,6 @@ Planets.prototype.loadResources = function(cb) {
             tempImg.onload  = function() {
                 self.data.loadedResourcesCount++;
                 if(self.data.loadedResourcesCount == self.data.resourcesCount) {
-                    console.log("Resources loaded");
                     self.startTimestamp = new Date();
                     self._flags['_resources_loaded'] = true;
                     cb();
@@ -80,14 +78,32 @@ Planets.prototype.listen = function() {
     var self = this;
 
     window.addEventListener("mousedown", function(evt){
+        if(!evt.x) {
+            evt.x = evt.clientX;
+        }
+        if(!evt.y) {
+            evt.y = evt.clientY;
+        }
         self.handleMouseEvent("mousedown", evt);
     }, false);
 
     window.addEventListener("mousemove", function(evt){
+        if(!evt.x) {
+            evt.x = evt.clientX;
+        }
+        if(!evt.y) {
+            evt.y = evt.clientY;
+        }
         self.handleMouseEvent("mousemove", evt);
     }, false);
 
     window.addEventListener("mouseup", function(evt){
+        if(!evt.x) {
+            evt.x = evt.clientX;
+        }
+        if(!evt.y) {
+            evt.y = evt.clientY;
+        }
         self.handleMouseEvent("mouseup", evt);
     }, false);
 }

@@ -23,6 +23,7 @@ Helpers.extend(PlanetsOption, Element);
 PlanetsOption.prototype.handleEvent = function(type, evt) {
     switch(type) {
         case "mousedown": {
+            document.getElementById('body').style.cursor = "auto";
             var planet = this.traverseTo("Planet");
             planet.start();
             this.clickEvent(planet, evt);
