@@ -3,6 +3,14 @@ var Element = function() {
 
 }
 
+Element.prototype.traverseTo = function(className) {
+    if(this instanceof window[className]) {
+        return this;
+    }
+
+    return this.parent.traverseTo(className);
+}
+
 Element.prototype.getStartTimestamp = function() {
     if(this.startTimestamp == undefined) {
         return this.parent.getStartTimestamp();

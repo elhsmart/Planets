@@ -20,6 +20,15 @@ var resources = {
         "10": "/img/planets/5_2.png",
         "11": "/img/planets/6_1.png",
         "12": "/img/planets/6_2.png"
+    },
+    "popups": {
+        "float": "/img/popups/float.png",
+        "static": "/img/popups/static.png"
+    },
+    "options": {
+        "ban": "/img/options/ban.png",
+        "bookmark": "/img/options/bookmark.png",
+        "trade": "/img/options/trade.png"
     }
 }
 
@@ -49,10 +58,13 @@ PlanetController.run(function(){
         this['Planet'+i] = new Planet({
             image: PlanetController.resources['planets-'+(i+1)],
             speed: Math.PI*2/(40+(i*20)),
-            startPosition: 0,
-            globalCenter: PlanetController.getGlobalCenter()
+            startPosition: pos,
+            globalCenter: PlanetController.getGlobalCenter(),
+            name: PlanetNames.rand(),
+            owner: Nicknames.rand(),
+            alliance: AllianceNames.rand()
         });
-        1
+
         this["Orbit"+i].addPlanet(this["Planet"+i]);
         MainStar.appendOrbit(this["Orbit"+i]);
     }

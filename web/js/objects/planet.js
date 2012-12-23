@@ -3,6 +3,7 @@ var Planet = function(parameters) {
     this.id         = Helpers.uniq();
     this.image      = 0;
 
+    this.stopped    = false;
     this.width      = 0;
     this.height     = 0;
 
@@ -15,6 +16,19 @@ var Planet = function(parameters) {
     this.dc         = document.createElement("canvas");
     this.dctx       = this.dc.getContext("2d");
 
+    this.popups     = {
+        static: new Popup({
+            parent: this,
+            type: "static",
+            image: PlanetController.resources['popups-static']
+        }),
+        float: new Popup({
+            parent: this,
+            type: "float",
+            image: PlanetController.resources['popups-float']
+        }),
+    }
+
     Helpers.setParams.call(this, parameters);
 }
 
@@ -22,6 +36,14 @@ Helpers.extend(Planet, Element);
 
 Planet.prototype.handleEvent = function(type, evt) {
 
+}
+
+Planet.prototype.renderPopup = function() {
+    if(this.stopped) {
+        return this.popups.static;
+    }
+
+    return this.popups.float;
 }
 
 Planet.prototype.setImage = function(img) {
@@ -41,6 +63,30 @@ Planet.prototype.getSpeed = function() {
     return this.speed;
 }
 
+Planet.prototype.setName = function(name) {
+    this.name = name;
+}
+
+Planet.prototype.getName = function() {
+    return this.name;
+}
+
+Planet.prototype.setOwner = function(owner) {
+    this.owner = owner;
+}
+
+Planet.prototype.getOwner = function() {
+    return this.owner;
+}
+
+Planet.prototype.setAlliance = function(alliance) {
+    this.alliance = alliance;
+}
+
+Planet.prototype.getAlliance = function() {
+    return this.alliance;
+}
+
 Planet.prototype.getPosition = function() {
     return this.position;
 }
@@ -57,11 +103,28 @@ Planet.prototype.setStartPosition = function(pos) {
     this.startPosition = pos;
 }
 
-Planet.prototype.updatePosition = function(timestamp) {
-    var startTimestamp  = this.getStartTimestamp();
-    var timeDelta       = timestamp.getTime() - startTimestamp.getTime();
+Planet.prototype.stop = function() {
+    this.stopped = true;
+}
 
-    this.setPosition(this.startPosition + this.speed / 1000 * timeDelta);
+Planet.prototype.start = function() {
+    this.stopped = false;
+
+    delete this.traverseTo("Star").popup;
+    this.traverseTo("Orbit").hover = false;
+    var pos = this.getPosition();
+    this.updatePosition(new Date());
+
+    this.startPosition = this.startPosition - (this.position - pos);
+}
+
+Planet.prototype.updatePosition = function(timestamp) {
+    if(!this.stopped){
+        var startTimestamp  = this.getStartTimestamp();
+        var timeDelta       = timestamp.getTime() - startTimestamp.getTime();
+
+        this.setPosition(this.startPosition + this.speed / 1000 * timeDelta);
+    }
 }
 
 Planet.prototype.draw = function(timestamp) {

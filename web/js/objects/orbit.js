@@ -31,46 +31,72 @@ Orbit.prototype.handleEvent = function(type, evt) {
         case "mousemove": {
             this.lastMouseX = evt.x;
             this.lastMouseY = evt.y;
-
-            this.update();
             /*var angle = Math.atan2(-(evt.y - this.globalCenter.y), (evt.x - this.globalCenter.x));
             if(angle < 0) {
                 angle += 2 * Math.PI;
             }
             console.log(angle);*/
+            break;
+        }
+        case "mousedown": {
+            this.lastMouseX = evt.x;
+            this.lastMouseY = evt.y;
+            for (var n = this.planets.length - 1; n >= 0; n--) {
+                if(this.planets[n].hover) {
+                    this.planets[n].stop();
+                }
+            }
         }
     }
 }
 
 Orbit.prototype.drawPlanetPopup = function(planet) {
-    console.log("Drawing");
+    var popup = planet.renderPopup();
+    switch(popup.type) {
+        case "float":{
+            var x = (this.globalCenter.x - 28) + this.radius * Math.cos(planet.getPosition()+Math.PI/2);
+            var y = (this.globalCenter.y - 15) + this.radius * Math.sin(planet.getPosition()+Math.PI/2);
+            break;
+        }
+        case "static": {
+            var x = (this.globalCenter.x - 41.5) + this.radius * Math.cos(planet.getPosition()+Math.PI/2);
+            var y = (this.globalCenter.y - 41.5) + this.radius * Math.sin(planet.getPosition()+Math.PI/2);
+        }
+    }
+    popup.setX(x);
+    popup.setY(y);
+    this.parent.pushPopup(popup);
 }
 
 Orbit.prototype.update = function() {
     if(this.hover) {
         for(var a in this.planets) {
-            this.dctx.save();
-            this.dctx.translate(this.width/2, this.height/2);
+            if(this.planets.hasOwnProperty(a)){
+                this.dctx.save();
+                this.dctx.translate(this.width/2, this.height/2);
 
-            this.dctx.rotate(this.planets[a].getPosition());
-            this.dctx.beginPath();
-            this.dctx.arc(0, this.radius, 15, 0, Math.PI*2, true);
-            this.dctx.closePath();
+                this.dctx.rotate(this.planets[a].getPosition());
+                this.dctx.beginPath();
+                this.dctx.arc(0, this.radius, 15, 0, Math.PI*2, true);
+                this.dctx.closePath();
 
-            var mouseX = this.lastMouseX - (this.globalCenter.x - (this.radius + this.planetRadius));
-            var mouseY = this.lastMouseY - (this.globalCenter.y - (this.radius + this.planetRadius));
+                var mouseX = this.lastMouseX - (this.globalCenter.x - (this.radius + this.planetRadius));
+                var mouseY = this.lastMouseY - (this.globalCenter.y - (this.radius + this.planetRadius));
 
-            if(this.dctx.isPointInPath(mouseX, mouseY)) {
-                this.drawPlanetPopup(this.planets[a]);
+                if(this.dctx.isPointInPath(mouseX, mouseY)) {
+                    this.planets[a].hover = true;
+                    this.drawPlanetPopup(this.planets[a]);
+                } else {
+                    this.planets[a].hover = false;
+                }
+
+                this.dctx.restore();
             }
-
-            this.dctx.restore();
         }
     }
 }
 
 Orbit.prototype.draw = function(timestamp) {
-    this.update();
 
     var drawData = null;
     this.dctx.clearRect(0, 0, this.width, this.height);
@@ -89,19 +115,22 @@ Orbit.prototype.draw = function(timestamp) {
     this.dctx.stroke();
 
     for(var a in this.planets) {
-        drawData = this.planets[a].draw(timestamp);
-        this.dctx.save();
+        if(this.planets.hasOwnProperty(a)) {
+            drawData = this.planets[a].draw(timestamp);
+            this.dctx.save();
 
-        this.dctx.translate(this.width/2, this.height/2);
-        this.dctx.rotate(this.planets[a].getPosition());
-        this.dctx.drawImage(drawData,
-            (this.planets[a].width)/2*-1,
-            (this.height/2-this.planets[a].height)
-        );
-        this.dctx.restore();
+            this.dctx.translate(this.width/2, this.height/2);
+            this.dctx.rotate(this.planets[a].getPosition());
+            this.dctx.drawImage(drawData,
+                (this.planets[a].width)/2*-1,
+                (this.height/2-this.planets[a].height)
+            );
+            this.dctx.restore();
+        }
     }
 
     //console.log(this.dc.toDataURL());
+    this.update();
 
     return this.dc;
 }

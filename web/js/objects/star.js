@@ -31,9 +31,22 @@ Star.prototype.appendOrbit = function(orbit) {
     }
 }
 
+Star.prototype.pushPopup = function(popup) {
+    this.popup = popup;
+}
+
 Star.prototype.handleEvent = function(type, evt) {
     switch(type) {
         case "mousemove": {
+            var stopPropagation = true;
+            if(this.popup && this.popup.type == "static") {
+                stopPropagation = this.popup.handleEvent(type, evt);
+            }
+
+            if(!stopPropagation) {
+                return;
+            }
+
             var distance = Helpers.distance(this.globalCenter.x, this.globalCenter.y, evt.x, evt.y);
             for (var n = this.orbits.length - 1; n >= 0; n--) {
                 if(this.orbits[n].radius-10 < distance &&
@@ -45,6 +58,22 @@ Star.prototype.handleEvent = function(type, evt) {
                 }
             }
             break;
+        }
+        case "mousedown": {
+            var stopPropagation = true;
+            if(this.popup && this.popup.type == "static") {
+                stopPropagation = this.popup.handleEvent(type, evt);
+            }
+            if(!stopPropagation) {
+                return;
+            }
+
+            for (var n = this.orbits.length - 1; n >= 0; n--) {
+                if(this.orbits[n].hover) {
+                    this.orbits[n].handleEvent(type, evt);
+                    break;
+                }
+            }
         }
     }
 }
@@ -67,27 +96,29 @@ Star.prototype.draw = function(timestamp) {
     // Compose all orbits
 
     for(var a in this.orbits) {
-        drawData = this.orbits[a].draw(timestamp);
-        if(orbitData == null) {
-            orbitData = drawData;
-            continue;
-        }
+        if(this.orbits.hasOwnProperty(a)) {
+            drawData = this.orbits[a].draw(timestamp);
+            if(orbitData == null) {
+                orbitData = drawData;
+                continue;
+            }
 
-        if(orbitData.width > drawData.width) {
-            orbitData.getContext("2d").drawImage(
-                drawData,
-                (orbitData.width - drawData.width)/2,
-                (orbitData.height - drawData.height)/2
+            if(orbitData.width > drawData.width) {
+                orbitData.getContext("2d").drawImage(
+                    drawData,
+                    (orbitData.width - drawData.width)/2,
+                    (orbitData.height - drawData.height)/2
+                );
+                continue;
+            }
+
+            drawData.getContext("2d").drawImage(
+                orbitData,
+                (drawData.width - orbitData.width)/2,
+                (drawData.height - orbitData.height)/2
             );
-            continue;
+            orbitData = drawData;
         }
-
-        drawData.getContext("2d").drawImage(
-            orbitData,
-            (drawData.width - orbitData.width)/2,
-            (drawData.height - orbitData.height)/2
-        );
-        orbitData = drawData;
     }
 
     // Draw Star
@@ -103,6 +134,13 @@ Star.prototype.draw = function(timestamp) {
         (this.dc.width - this.image.width) / 2,
         (this.dc.width - this.image.width) / 2
     );
+
+    if(this.popup != undefined) {
+        this.dctx.drawImage(this.popup.draw(), this.popup.x, this.popup.y);
+        if(this.popup.type == "float") {
+            delete this.popup;
+        }
+    }
 
     return this.dc;
 }
