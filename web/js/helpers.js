@@ -40,8 +40,16 @@ var Helpers = {
 
     distance: function(x1, y1, x2, y2) {
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    },
+
+    randInt: function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 };
+
+Array.prototype.rand = function () {
+    return this[Math.floor(Math.random() * this.length)]
+}
 
 window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame       ||
@@ -53,3 +61,11 @@ window.requestAnimFrame = (function(){
             window.setTimeout(callback, 1000 / 60);
         };
 })();
+
+try {
+    console.log();
+} catch(ex) {
+    /*var*/ console = { log: function() {
+    // implement it here
+    } };
+}

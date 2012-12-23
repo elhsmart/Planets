@@ -34,18 +34,20 @@ Planets.prototype.pushResource = function(name, url) {
 }
 
 Planets.prototype.draw = function(timestamp) {
-    //setTimeout(function(){self.draw(new Date())}, 1000);
+    //setTimeout(function(){self.draw(new Date())}, 100);
     var self = this;
     self.frame++;
 
     self.cx.clearRect(0, 0, this.width, this.height);
     for(var a in self.elements) {
-        var drawData = this.elements[a].draw(timestamp);
+        if(self.elements.hasOwnProperty(a)) {
+            var drawData = this.elements[a].draw(timestamp);
 
-        self.cx.save();
-        self.cx.translate((this.width-drawData.width)/2, (this.height-drawData.height)/2);
-        self.cx.drawImage(drawData, self.elements[a].getX(), self.elements[a].getY());
-        self.cx.restore();
+            self.cx.save();
+            self.cx.translate((this.width-drawData.width)/2, (this.height-drawData.height)/2);
+            self.cx.drawImage(drawData, self.elements[a].getX(), self.elements[a].getY());
+            self.cx.restore();
+        }
     }
 
     requestAnimFrame(function(){self.draw(new Date());});
@@ -57,18 +59,20 @@ Planets.prototype.loadResources = function(cb) {
     self.data.loadedResourcesCount = 0;
     self.data.resourcesCount = Helpers.objLength(self.resources);
     for(var resource in self.resources) {
-        var tempImg     = new Image();
-        tempImg.onload  = function() {
-            self.data.loadedResourcesCount++;
-            if(self.data.loadedResourcesCount == self.data.resourcesCount) {
-                console.log("Resources loaded");
-                self.startTimestamp = new Date();
-                self._flags['_resources_loaded'] = true;
-                cb();
+        if(self.resources.hasOwnProperty(resource)) {
+            var tempImg     = new Image();
+            tempImg.onload  = function() {
+                self.data.loadedResourcesCount++;
+                if(self.data.loadedResourcesCount == self.data.resourcesCount) {
+                    console.log("Resources loaded");
+                    self.startTimestamp = new Date();
+                    self._flags['_resources_loaded'] = true;
+                    cb();
+                }
             }
+            tempImg.src = self.resources[resource];
+            self.resources[resource] = tempImg;
         }
-        tempImg.src = self.resources[resource];
-        self.resources[resource] = tempImg;
     }
 }
 
