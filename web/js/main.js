@@ -54,9 +54,8 @@ PlanetController.run(function(){
         });
 
         pos = (Math.floor(Math.random() * Math.floor(Math.PI*2*100))) / 100;
-        //console.log('planets-'+i);
         this['Planet'+i] = new Planet({
-            image: PlanetController.resources['planets-'+(i+1)],
+            image: PlanetController.resources['planets-'+Helpers.randInt(1,12)],
             speed: Math.PI*2/(40+(i*20)),
             startPosition: pos,
             globalCenter: PlanetController.getGlobalCenter(),

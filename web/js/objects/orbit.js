@@ -34,8 +34,7 @@ Orbit.prototype.handleEvent = function(type, evt) {
             /*var angle = Math.atan2(-(evt.y - this.globalCenter.y), (evt.x - this.globalCenter.x));
             if(angle < 0) {
                 angle += 2 * Math.PI;
-            }
-            console.log(angle);*/
+            }*/
             break;
         }
         case "mousedown": {
@@ -129,9 +128,7 @@ Orbit.prototype.draw = function(timestamp) {
         }
     }
 
-    //console.log(this.dc.toDataURL());
     this.update();
-
     return this.dc;
 }
 
