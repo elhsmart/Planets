@@ -78,33 +78,51 @@ Planets.prototype.listen = function() {
     var self = this;
 
     window.addEventListener("mousedown", function(evt){
-        if(!evt.x) {
-            evt.x = evt.clientX;
+        var e = {
+            x: evt.x,
+            y: evt.y
         }
-        if(!evt.y) {
-            evt.y = evt.clientY;
+        if(!e.x) {
+            e.x = evt.clientX;
         }
-        self.handleMouseEvent("mousedown", evt);
+        e.x = e.x + window.scrollX;
+        if(!e.y) {
+            e.y = evt.clientY;
+        }
+        e.y = e.y + window.scrollY;
+        self.handleMouseEvent("mousedown", e);
     }, false);
 
     window.addEventListener("mousemove", function(evt){
-        if(!evt.x) {
-            evt.x = evt.clientX;
+        var e = {
+            x: evt.x,
+            y: evt.y
         }
-        if(!evt.y) {
-            evt.y = evt.clientY;
+        if(!e.x) {
+            e.x = evt.clientX;
         }
-        self.handleMouseEvent("mousemove", evt);
+        e.x = e.x + window.scrollX;
+        if(!e.y) {
+            e.y = evt.clientY;
+        }
+        e.y = e.y + window.scrollY;
+        self.handleMouseEvent("mousemove", e);
     }, false);
 
     window.addEventListener("mouseup", function(evt){
-        if(!evt.x) {
-            evt.x = evt.clientX;
+        var e = {
+            x: evt.x,
+            y: evt.y
         }
-        if(!evt.y) {
-            evt.y = evt.clientY;
+        if(!e.x) {
+            e.x = evt.clientX;
         }
-        self.handleMouseEvent("mouseup", evt);
+        e.x = e.x + window.scrollX;
+        if(!e.y) {
+            e.y = evt.clientY;
+        }
+        e.y = e.y + window.scrollY;
+        self.handleMouseEvent("mouseup", e);
     }, false);
 }
 
